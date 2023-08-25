@@ -1,13 +1,14 @@
-import { IsArray, IsDateString, IsNumber } from 'class-validator';
+import { IsArray, IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateScheduleDto {
+  @IsString()
   policyId: string;
   @IsDateString()
-  start: Date;
+  startAt: Date;
   @IsDateString()
-  end: Date;
+  endAt: Date;
   @IsNumber()
   period: number;
   @IsArray()
-  devices: string[];
+  deviceIds: string[];
 }

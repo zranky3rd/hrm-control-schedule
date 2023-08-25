@@ -13,7 +13,8 @@ export default registerAs(
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [Schedule, Device],
-    synchronize: false,
-    dropSchema: false,
+    synchronize: true,
+    dropSchema: !!+process.env.DB_DROP_SCHEMA,
+    timezone: 'UTC',
   }),
 );

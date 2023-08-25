@@ -1,8 +1,21 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Device } from './device.entity';
 
-@Entity()
+@Entity('hrm-control-schedule')
 export class Schedule {
+  constructor(partial?: Partial<Schedule>) {
+    Object.assign(this, partial);
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
   @Column({
@@ -10,17 +23,22 @@ export class Schedule {
   })
   policyId: string;
   @Column()
-  start: Date;
+  @Index()
+  startAt: Date;
   @Column()
-  end: Date;
+  @Index()
+  endAt: Date;
   @Column()
   period: number; //millisec.
   @OneToMany(() => Device, (device) => device.schedule, {
     cascade: true,
   })
+  // @Exclude()
   devices: Device[];
-  @Column()
-  created: Date;
-  @Column()
-  updated: Date;
+  @CreateDateColumn()
+  @Index()
+  createdAt: Date;
+  @Exclude()
+  @UpdateDateColumn({ nullable: true })
+  updatedAt: Date;
 }
