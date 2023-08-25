@@ -51,20 +51,6 @@ export class SchedulesController {
     const savedSchedule = await this.service.create(schedule);
     delete savedSchedule.devices;
 
-    /*
-    const { data } = await firstValueFrom(
-      this.httpService
-        .get<Schedule>(`http://localhost:3000/schedules/${savedSchedule.id}`)
-        .pipe(
-          catchError((error: AxiosError) => {
-            this.logger.error(error.response.data);
-            throw 'An error happened!';
-          }),
-        ),
-    );
-    const tmp: Schedule = data;
-    this.logger.debug(tmp);
-    */
     return savedSchedule;
   }
 
