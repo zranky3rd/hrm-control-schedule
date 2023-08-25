@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 import { Schedule } from './schedule.entity';
 
 @Injectable()
-export class ScheduleService {
-  private readonly logger = new Logger(ScheduleService.name);
+export class SchedulesService {
+  private readonly logger = new Logger(SchedulesService.name);
   constructor(
     @InjectRepository(Schedule)
     private readonly repository: Repository<Schedule>,
