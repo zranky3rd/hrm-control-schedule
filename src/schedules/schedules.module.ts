@@ -5,9 +5,18 @@ import { Device } from './device.entity';
 import { SchedulesController } from './schedules.controller';
 import { SchedulesService } from './schedules.service';
 import { HrmTbDevicesService } from './hrm-devices.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Schedule, Device])],
+  imports: [
+    TypeOrmModule.forFeature([Schedule, Device]),
+    HttpModule.registerAsync({
+      useFactory: () => ({
+        timeout: 5000,
+        maxRedirects: 5,
+      }),
+    }),
+  ],
   controllers: [SchedulesController],
   providers: [SchedulesService, HrmTbDevicesService],
 })

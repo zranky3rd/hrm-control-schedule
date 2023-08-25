@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -12,10 +13,10 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Device } from './device.entity';
+import { HrmTbDevicesService } from './hrm-devices.service';
 import { CreateScheduleDto } from './input/create-schedule.dto';
 import { Schedule } from './schedule.entity';
 import { SchedulesService } from './schedules.service';
-import { HrmTbDevicesService } from './hrm-devices.service';
 
 @Controller('/schedules')
 export class SchedulesController {
@@ -24,6 +25,7 @@ export class SchedulesController {
   constructor(
     private readonly service: SchedulesService,
     private readonly hrmDevicesService: HrmTbDevicesService,
+    private readonly httpService: HttpService,
   ) {}
 
   @Post()
@@ -42,11 +44,27 @@ export class SchedulesController {
       if (rows.length) {
         const [{ uid }] = rows;
         device.uid = uid;
+        //TODO: request to ST server
       }
       schedule.devices.push(device);
     }
     const savedSchedule = await this.service.create(schedule);
     delete savedSchedule.devices;
+
+    /*
+    const { data } = await firstValueFrom(
+      this.httpService
+        .get<Schedule>(`http://localhost:3000/schedules/${savedSchedule.id}`)
+        .pipe(
+          catchError((error: AxiosError) => {
+            this.logger.error(error.response.data);
+            throw 'An error happened!';
+          }),
+        ),
+    );
+    const tmp: Schedule = data;
+    this.logger.debug(tmp);
+    */
     return savedSchedule;
   }
 
