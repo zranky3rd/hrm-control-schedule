@@ -47,41 +47,15 @@ export class SchedulesController {
       if (rows.length) {
         const [{ uid }] = rows;
         device.uid = uid;
-        //TODO: request to ST server
       }
       schedule.devices.push(device);
     }
-    const savedSchedule = await this.service.create(schedule);
-    //TODO: add queue
-    delete savedSchedule.devices;
+    await this.service.create(schedule);
+    this.queue.clean(5000);
+    this.queue.add(constants.QUEUE_JOB_SCHEDULE, new Schedule(schedule));
+    delete schedule.devices;
 
-    return savedSchedule;
-  }
-
-  @Get('test')
-  test() {
-    this.queue.add(
-      constants.QUEUE_JOB_SCHEDULE,
-      new Schedule({
-        startAt: new Date(),
-        endAt: new Date(),
-        period: 1000,
-        devices: [
-          new Device({
-            di: 'a',
-            uid: 'aa',
-          }),
-          new Device({
-            di: 'b',
-            uid: 'bb',
-          }),
-          new Device({
-            di: 'b',
-            uid: 'bb',
-          }),
-        ],
-      }),
-    );
+    return schedule;
   }
 
   @Get('/:id')

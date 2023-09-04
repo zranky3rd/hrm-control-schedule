@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import ormConfig from './config/orm.config';
 import { SchedulesModule } from './schedules/schedules.module';
 import { BullModule } from '@nestjs/bull';
+import bullConfig from './config/bull.config';
 
 @Module({
   imports: [
@@ -16,11 +17,8 @@ import { BullModule } from '@nestjs/bull';
     TypeOrmModule.forRootAsync({
       useFactory: ormConfig,
     }),
-    BullModule.forRoot({
-      redis: {
-        host: process.env.REDIS_HOST,
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      useFactory: bullConfig,
     }),
     SchedulesModule,
   ],
