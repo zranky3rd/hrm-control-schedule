@@ -1,7 +1,8 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Device } from 'src/schedules/device.entity';
-import { Schedule } from 'src/schedules/schedule.entity';
+import constants from '../constants/constants';
+import { Device } from '../schedules/device.entity';
+import { Schedule } from '../schedules/schedule.entity';
 
 export default registerAs(
   'orm.config',
@@ -13,8 +14,7 @@ export default registerAs(
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [Schedule, Device],
-    synchronize: false,
+    synchronize: process.env.NODE_ENV === constants.NODE_ENV_DEV,
     dropSchema: false,
-    timezone: 'UTC',
   }),
 );

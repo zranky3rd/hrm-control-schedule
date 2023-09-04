@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import ormConfig from './config/orm.config';
-import ormConfigDev from './config/orm.config.dev';
 import { SchedulesModule } from './schedules/schedules.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -14,8 +14,13 @@ import { SchedulesModule } from './schedules/schedules.module';
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory:
-        process.env.NODE_ENV === 'development' ? ormConfigDev : ormConfig,
+      useFactory: ormConfig,
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: process.env.REDIS_HOST,
+        port: 6379,
+      },
     }),
     SchedulesModule,
   ],
